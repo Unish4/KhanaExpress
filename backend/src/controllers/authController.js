@@ -2,7 +2,6 @@ import User from "../models/User.js";
 import Order from "../models/Order.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt.js";
-import { successResponse, errorResponse } from "../utils/response.js";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
