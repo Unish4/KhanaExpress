@@ -22,7 +22,7 @@ const startServer = async () => {
     connectDB();
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`Environment: ${ENV.NODE_ENV}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
