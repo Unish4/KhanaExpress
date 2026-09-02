@@ -108,13 +108,14 @@ export const createOrder = async (req, res) => {
     }
 
     const deliveryFee = restaurant.deliveryFee || 0;
-    const tax = subtotal * 0.08;
-    const total = subtotal + tax + deliveryFee;
+    const TAX_RATE = 0.13;
+    const round2 = (value) => Math.round(value * 100) / 100;
+    const tax = round2(subtotal * TAX_RATE);
+    const total = round2(subtotal + tax + deliveryFee);
 
     const estimatedDelivery = new Date(
-      Date.now() + restaurant.deliveryTime * 60 * 1000,
+      Date.now() + (restaurant.deliveryTime || 30) * 60 * 1000,
     );
-
     const order = await Order.create({
       customer: req.user.id,
       restaurant: restaurantId,
@@ -167,8 +168,8 @@ export const getMyOrders = async (req, res) => {
     }
 
     const sort = { createdAt: -1 };
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const skip = (page - 1) * limit;
 
     const orders = await Order.find(filter)
@@ -222,8 +223,8 @@ export const getRestaurantOrders = async (req, res) => {
     }
 
     const sort = { createdAt: -1 };
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 100);
     const skip = (page - 1) * limit;
 
     const orders = await Order.find(filter)
@@ -337,7 +338,7 @@ export const getOrder = async (req, res) => {
       order.restaurant._id.toString() === req.user.restaurant?.toString();
 
     const isDeliveryPartner =
-      order.deliveryPartner?.toString() === req.user.id.toString();
+      order.deliveryPartner?._id?.toString() === req.user.id.toString();
 
     const isAdmin = req.user.role === "admin";
 
@@ -462,18 +463,42 @@ export const updateOrderStatus = async (req, res) => {
 
     const isAdmin = req.user.role === "admin";
 
-    if (req.user.role === "restaurant" && !isRestaurantOwner) {
+    if (!isAdmin && req.user.role === "customer" && !isCustomer) {
+      return res.status(403).json({
+        success: false,
+        error: "You can only update your own orders",
+      });
+    }
+
+    if (!isAdmin && req.user.role === "restaurant" && !isRestaurantOwner) {
       return res.status(403).json({
         success: false,
         error: "You can only update your own restaurant orders",
       });
     }
 
-    if (req.user.role === "delivery" && !isDeliveryPartner) {
+    if (!isAdmin && req.user.role === "delivery" && !isDeliveryPartner) {
       return res.status(403).json({
         success: false,
         error: "You can only update your assigned orders",
       });
+    }
+
+    if (!isAdmin) {
+      const allowedStatusesByRole = {
+        customer: ["cancelled"],
+        restaurant: ["confirmed", "preparing", "ready"],
+        delivery: ["delivering", "delivered"],
+      };
+
+      const allowedStatuses = allowedStatusesByRole[req.user.role] || [];
+
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          success: false,
+          error: `You can only set status to: ${allowedStatuses.join(", ")}`,
+        });
+      }
     }
 
     order.status = status;
@@ -599,24 +624,35 @@ export const pickupOrder = async (req, res) => {
       });
     }
 
-    if (order.deliveryPartner) {
+    const claimedOrder = await Order.findOneAndUpdate(
+      {
+        _id: order._id,
+        deliveryPartner: null,
+      },
+      {
+        $set: {
+          deliveryPartner: req.user.id,
+          status: "delivering",
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!claimedOrder) {
       return res.status(400).json({
         success: false,
         error: "Order already assigned to another delivery partner",
       });
     }
 
-    order.deliveryPartner = req.user.id;
-    order.status = "delivering";
-
-    await order.save();
-
     return res.status(200).json({
       success: true,
       message: "Order picked up",
       data: {
-        status: order.status,
-        deliveryPartner: order.deliveryPartner,
+        status: claimedOrder.status,
+        deliveryPartner: claimedOrder.deliveryPartner,
       },
     });
   } catch (error) {

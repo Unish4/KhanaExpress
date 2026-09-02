@@ -159,7 +159,7 @@ export const getRestaurants = async (req, res) => {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate("restaurant", "name email phone");
+      .populate("owner", "name email phone");
 
     const total = await Restaurant.countDocuments(filter);
 
@@ -263,7 +263,7 @@ export const updateRestaurant = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Restaurant updated successfully",
-      data: updateRestaurant,
+      data: updatedRestaurant,
     });
   } catch (error) {
     if (error.name === "ValidationError") {
@@ -313,7 +313,7 @@ export const deleteRestaurant = async (req, res) => {
       try {
         await deleteFromCloudinary(restaurant.image.publicId);
       } catch (error) {
-        console.error("Failed to delete image:", err);
+        console.error("Failed to delete image:", error);
       }
     }
 
@@ -321,10 +321,9 @@ export const deleteRestaurant = async (req, res) => {
 
     await Restaurant.findByIdAndDelete(req.params.id);
 
-    await User.findByIdAndUpdate(req.params.id, {
+    await User.findByIdAndUpdate(restaurant.owner, {
       restaurant: null,
     });
-
     return res.status(200).json({
       success: true,
       message: "Restaurant deleted successfully",
@@ -357,14 +356,14 @@ export const uploadRestaurantImage = async (req, res) => {
     const restaurant = await Restaurant.findById(req.params.id);
 
     if (!restaurant) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        error: "Restaurant not fodun",
+        error: "Restaurant not found",
       });
     }
 
     const isOwner = restaurant.owner.toString() === req.user.id.toString();
-    const isAdmin = req.user.role;
+    const isAdmin = req.user.role === "admin";
 
     if (!isOwner && !isAdmin) {
       return res.status(403).json({
@@ -373,14 +372,7 @@ export const uploadRestaurantImage = async (req, res) => {
       });
     }
 
-    if (restaurant.image?.publicId) {
-      try {
-        await deleteFromCloudinary(restaurant.image.publicId);
-      } catch (error) {
-        console.error("Failed to delete old image:", err);
-      }
-    }
-
+    const oldImagePublicId = restaurant.image?.publicId;
     const result = await uploadToCloudinary(
       req.file.buffer,
       req.file.mimetype,
@@ -391,8 +383,25 @@ export const uploadRestaurantImage = async (req, res) => {
       url: result.url,
       publicId: result.publicId,
     };
+    try {
+      await restaurant.save();
+    } catch (saveError) {
+      try {
+        await deleteFromCloudinary(result.publicId);
+      } catch (deleteError) {
+        console.error("Failed to delete new image after save error:", deleteError);
+      }
 
-    await restaurant.save();
+      throw saveError;
+    }
+
+    if (oldImagePublicId) {
+      try {
+        await deleteFromCloudinary(oldImagePublicId);
+      } catch (error) {
+        console.error("Failed to delete old image:", error);
+      }
+    }
 
     return res.status(200).json({
       success: true,
