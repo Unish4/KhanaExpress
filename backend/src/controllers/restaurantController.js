@@ -221,6 +221,13 @@ export const getRestaurant = async (req, res) => {
       });
     }
 
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: "A restaurant with this name already exists",
+      });
+    }
+
     return res.status(500).json({
       success: false,
       error: error.message,

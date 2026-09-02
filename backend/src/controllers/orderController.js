@@ -499,6 +499,27 @@ export const updateOrderStatus = async (req, res) => {
           error: `You can only set status to: ${allowedStatuses.join(", ")}`,
         });
       }
+
+      if (
+        req.user.role === "customer" &&
+        status === "cancelled" &&
+        !["pending", "confirmed"].includes(order.status)
+      ) {
+        return res.status(400).json({
+          success: false,
+          error: `Cannot cancel order with status '${order.status}'. Food is already being prepared.`,
+        });
+      }
+
+      if (
+        req.user.role === "restaurant" &&
+        ["cancelled", "delivered"].includes(order.status)
+      ) {
+        return res.status(400).json({
+          success: false,
+          error: `Cannot update order with status '${order.status}'`,
+        });
+      }
     }
 
     order.status = status;
@@ -627,6 +648,7 @@ export const pickupOrder = async (req, res) => {
     const claimedOrder = await Order.findOneAndUpdate(
       {
         _id: order._id,
+        status: "ready",
         deliveryPartner: null,
       },
       {
@@ -639,7 +661,6 @@ export const pickupOrder = async (req, res) => {
         new: true,
       },
     );
-
     if (!claimedOrder) {
       return res.status(400).json({
         success: false,

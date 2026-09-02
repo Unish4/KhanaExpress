@@ -1,7 +1,13 @@
+import mongoose from "mongoose";
 import Review from "../models/Review.js";
 import Order from "../models/Order.js";
 import Restaurant from "../models/Restaurant.js";
 import MenuItem from "../models/MenuItem.js";
+
+const toObjectId = (value) =>
+  value instanceof mongoose.Types.ObjectId
+    ? value
+    : new mongoose.Types.ObjectId(value);
 
 export const createReview = async (req, res) => {
   try {
@@ -152,6 +158,15 @@ export const getRestaurantReviews = async (req, res) => {
   try {
     const { restaurantId } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(restaurantId)) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid restaurant ID format",
+      });
+    }
+
+    const restaurantObjectId = new mongoose.Types.ObjectId(restaurantId);
+
     const filter = { restaurant: restaurantId };
 
     const page = parseInt(req.query.page) || 1;
@@ -167,7 +182,7 @@ export const getRestaurantReviews = async (req, res) => {
     const total = await Review.countDocuments(filter);
 
     const distribution = await Review.aggregate([
-      { $match: { restaurant: mongoose.Types.ObjectId(restaurantId) } },
+      { $match: { restaurant: restaurantObjectId } },
       {
         $group: {
           _id: "$rating",
@@ -362,8 +377,10 @@ export const deleteReview = async (req, res) => {
 
 async function updateRestaurantRating(restaurantId) {
   try {
+    const restaurantObjectId = toObjectId(restaurantId);
+
     const result = await Review.aggregate([
-      { $match: { restaurant: restaurantId } },
+      { $match: { restaurant: restaurantObjectId } },
       {
         $group: {
           _id: null,
@@ -374,12 +391,12 @@ async function updateRestaurantRating(restaurantId) {
     ]);
 
     if (result.length > 0) {
-      await Restaurant.findByIdAndUpdate(restaurantId, {
+      await Restaurant.findByIdAndUpdate(restaurantObjectId, {
         rating: Math.round(result[0].avgRating * 10) / 10,
         totalReviews: result[0].totalReviews,
       });
     } else {
-      await Restaurant.findByIdAndUpdate(restaurantId, {
+      await Restaurant.findByIdAndUpdate(restaurantObjectId, {
         rating: 0,
         totalReviews: 0,
       });
@@ -391,8 +408,10 @@ async function updateRestaurantRating(restaurantId) {
 
 async function updateMenuItemRating(menuItemId) {
   try {
+    const menuItemObjectId = toObjectId(menuItemId);
+
     const result = await Review.aggregate([
-      { $match: { menuItem: menuItemId } },
+      { $match: { menuItem: menuItemObjectId } },
       {
         $group: {
           _id: null,
@@ -403,12 +422,12 @@ async function updateMenuItemRating(menuItemId) {
     ]);
 
     if (result.length > 0) {
-      await MenuItem.findByIdAndUpdate(menuItemId, {
+      await MenuItem.findByIdAndUpdate(menuItemObjectId, {
         rating: Math.round(result[0].avgRating * 10) / 10,
         totalReviews: result[0].totalReviews,
       });
     } else {
-      await MenuItem.findByIdAndUpdate(menuItemId, {
+      await MenuItem.findByIdAndUpdate(menuItemObjectId, {
         rating: 0,
         totalReviews: 0,
       });
