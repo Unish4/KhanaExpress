@@ -24,6 +24,5 @@ router.put("/update-profile", protect, updateProfile);
 router.delete("/delete-avatar", protect, deleteAvatar);
 router.post("/upload-avatar", protect, uploadAvatar);
 
-router.get("/stats", protect, authorize("admin"), getUserStats);
-
+router.get("/stats", protect, getUserStats);
 export default router;
