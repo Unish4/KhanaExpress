@@ -8,6 +8,7 @@ const restaurantSchema = new mongoose.Schema(
       trim: true,
       minlength: [3, "Name must be at least 3 characters long"],
       maxlength: [100, "Name must be at most 100 characters long"],
+      unique: true,
     },
 
     description: {
