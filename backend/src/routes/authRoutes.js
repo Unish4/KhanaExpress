@@ -11,18 +11,19 @@ import {
   uploadAvatar,
 } from "../controllers/authController.js";
 
-import { protect, authorize } from "../middleware/auth.js";
-// import { loginRateLimit } from "../middleware/arcjet.js";
+import upload from "../config/multer.js";
+import { protect } from "../middleware/auth.js";
+import { loginRateLimit } from "../middleware/arcjet.js";
 
 const router = express.Router();
 
 router.post("/register", register);
-router.post("/login", login);
+router.post("/login", loginRateLimit, login);
 router.get("/me", protect, getMe);
-router.put("/change-password", protect, changePassword);
-router.put("/update-profile", protect, updateProfile);
-router.delete("/delete-avatar", protect, deleteAvatar);
-router.post("/upload-avatar", protect, uploadAvatar);
-
 router.get("/stats", protect, getUserStats);
+router.patch("/me", protect, updateProfile);
+router.patch("/change-password", protect, changePassword);
+router.post("/avatar", protect, upload.single("avatar"), uploadAvatar);
+router.delete("/avatar", protect, deleteAvatar);
+
 export default router;
