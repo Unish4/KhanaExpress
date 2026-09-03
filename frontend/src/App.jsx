@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Account from './pages/Account';
 import Browse from './pages/Browse';
 import RestaurantDetail from './pages/RestaurantDetail';
+import Checkout from './pages/Checkout';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -48,7 +49,16 @@ function App() {
       {/* Customer / Discovery Routes */}
       <Route path="/restaurants" element={<Browse />} />
       <Route path="/restaurants/:id" element={<RestaurantDetail />} />
-      <Route path="/checkout" element={<PlaceholderScreen title="Checkout Page" />} />
+
+      {/* Authenticated Checkout & Live Tracking */}
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute allowedRoles={['customer']}>
+            <Checkout />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/orders/:id/track" element={<PlaceholderScreen title="Order Live Tracking" />} />
 
       {/* Authenticated User Account */}
