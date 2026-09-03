@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './store/useAuthStore';
 
-// Real Pages (Phase 2)
+// Real Pages
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Account from './pages/Account';
@@ -37,12 +38,12 @@ function App() {
 
   return (
     <Routes>
-      {/* Public Auth Routes */}
+      {/* Public Landing & Auth Routes */}
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
       {/* Customer / Discovery Routes */}
-      <Route path="/" element={<PlaceholderScreen title="Landing Page" />} />
       <Route path="/restaurants" element={<PlaceholderScreen title="Restaurant Directory" />} />
       <Route path="/restaurants/:id" element={<PlaceholderScreen title="Restaurant Detail & Menu" />} />
       <Route path="/checkout" element={<PlaceholderScreen title="Checkout Page" />} />
