@@ -7,13 +7,15 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Account from './pages/Account';
+import Browse from './pages/Browse';
+import RestaurantDetail from './pages/RestaurantDetail';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Temporary Screen Placeholder for future phases
 const PlaceholderScreen = ({ title, role }) => (
-  <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center bg-slate-50">
+  <div className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center bg-slate-50 font-sans">
     <div className="w-14 h-14 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#f97316] font-bold text-xl mb-4 shadow-xs">
       {title.charAt(0)}
     </div>
@@ -44,8 +46,8 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       {/* Customer / Discovery Routes */}
-      <Route path="/restaurants" element={<PlaceholderScreen title="Restaurant Directory" />} />
-      <Route path="/restaurants/:id" element={<PlaceholderScreen title="Restaurant Detail & Menu" />} />
+      <Route path="/restaurants" element={<Browse />} />
+      <Route path="/restaurants/:id" element={<RestaurantDetail />} />
       <Route path="/checkout" element={<PlaceholderScreen title="Checkout Page" />} />
       <Route path="/orders/:id/track" element={<PlaceholderScreen title="Order Live Tracking" />} />
 
