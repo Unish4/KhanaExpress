@@ -109,6 +109,18 @@ const restaurantSchema = new mongoose.Schema(
       min: [0, "Minimum fee cannot be negative"],
     },
 
+    minimumOrder: {
+      type: Number,
+      default: 0, // in currency units
+      min: [0, "Minimum order cannot be negative"],
+    },
+
+    deliveryFee: {
+      type: Number,
+      default: 0, // in currency units
+      min: [0, "Delivery fee cannot be negative"],
+    },
+
     rating: {
       type: Number,
       default: 0,
@@ -141,6 +153,17 @@ const restaurantSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+restaurantSchema.pre("validate", function (next) {
+  if (this.minimumOrder !== undefined && (this.minimumFee === undefined || this.minimumFee === 0)) {
+    this.minimumFee = this.minimumOrder;
+  } else if (this.minimumFee !== undefined && (this.minimumOrder === undefined || this.minimumOrder === 0)) {
+    this.minimumOrder = this.minimumFee;
+  }
+  if (typeof next === "function") {
+    next();
+  }
+});
 
 restaurantSchema.virtual("isHighlyRated").get(function () {
   return this.rating >= 4.5 && this.totalReviews >= 50;
