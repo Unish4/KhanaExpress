@@ -24,18 +24,8 @@ const menuItemSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: {
-        values: [
-          "appetizer",
-          "main-course",
-          "dessert",
-          "beverage",
-          "side-dish",
-          "combo",
-        ],
-        message: "{VALUE} is not a valid category",
-      },
       required: [true, "Category is required"],
+      trim: true,
     },
 
     price: {
