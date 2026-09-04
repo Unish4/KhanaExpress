@@ -100,10 +100,12 @@ export const createOrder = async (req, res) => {
       subtotal += menuItem.price * quantity;
     }
 
-    if (subtotal < restaurant.minimumOrder) {
+    const minOrder = restaurant.minimumOrder || restaurant.minimumFee || 0;
+
+    if (minOrder > 0 && subtotal < minOrder) {
       return res.status(400).json({
         success: false,
-        error: `Minimum order is $${restaurant.minimumOrder}. Your subtotal is $${subtotal}`,
+        error: `Minimum order is $${minOrder}. Your subtotal is $${subtotal}`,
       });
     }
 

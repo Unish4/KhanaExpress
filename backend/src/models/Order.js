@@ -117,6 +117,7 @@ const orderSchema = new mongoose.Schema(
           "preparing",
           "ready",
           "delivering",
+          "delivered",
           "completed",
           "cancelled",
         ],
@@ -187,7 +188,9 @@ orderSchema.pre("validate", function (next) {
     this.total = roundToCents(this.subtotal + this.tax + this.deliveryFee);
   }
 
-  next();
+  if (typeof next === "function") {
+    next();
+  }
 });
 
 orderSchema.virtual("itemCount").get(function () {
@@ -195,7 +198,8 @@ orderSchema.virtual("itemCount").get(function () {
 });
 
 orderSchema.virtual("isCancellable").get(function () {
-  return !["completed", "cancelled"].includes(this.status);});
+  return !["delivered", "completed", "cancelled"].includes(this.status);
+});
 
 // Enable virtuals
 orderSchema.set("toJSON", { virtuals: true });

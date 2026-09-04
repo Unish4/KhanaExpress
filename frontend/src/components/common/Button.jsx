@@ -11,6 +11,8 @@ export const Button = ({
   onClick,
   className = '',
   icon: Icon,
+  leftIcon,
+  rightIcon,
   fullWidth = false,
   ...props
 }) => {
@@ -53,8 +55,10 @@ export const Button = ({
         </>
       ) : (
         <>
+          {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
           {Icon && <Icon className="w-4 h-4 flex-shrink-0" />}
           {children}
+          {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
         </>
       )}
     </button>

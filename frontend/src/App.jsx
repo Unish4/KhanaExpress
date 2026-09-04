@@ -11,6 +11,7 @@ import Browse from './pages/Browse';
 import RestaurantDetail from './pages/RestaurantDetail';
 import Checkout from './pages/Checkout';
 import OrderTrack from './pages/OrderTrack';
+import OwnerLayout from './pages/owner/OwnerLayout';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -84,7 +85,7 @@ function App() {
         path="/owner/*"
         element={
           <ProtectedRoute allowedRoles={['restaurant', 'admin']}>
-            <PlaceholderScreen title="Restaurant Owner Portal" role="Restaurant Owner" />
+            <OwnerLayout />
           </ProtectedRoute>
         }
       />

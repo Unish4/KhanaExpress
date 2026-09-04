@@ -148,7 +148,7 @@ export const CartDrawer = () => {
                             </h4>
                           </div>
                           <p className="text-xs font-bold text-slate-800">
-                            ₹{item.price}{' '}
+                            NPR {item.price}{' '}
                             <span className="text-[11px] font-normal text-slate-400">
                               each
                             </span>
@@ -162,7 +162,7 @@ export const CartDrawer = () => {
                             onChange={(qty) => updateQuantity(targetId, qty)}
                           />
                           <span className="text-xs font-bold text-slate-900 tabular-nums">
-                            ₹{item.price * item.quantity}
+                            NPR {item.price * item.quantity}
                           </span>
                         </div>
                       </div>
@@ -194,7 +194,7 @@ export const CartDrawer = () => {
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-semibold text-slate-900 tabular-nums">
-                    ₹{subtotal}
+                    NPR {subtotal}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -203,20 +203,20 @@ export const CartDrawer = () => {
                     {deliveryFee === 0 ? (
                       <span className="text-emerald-600 font-bold">FREE</span>
                     ) : (
-                      `₹${deliveryFee}`
+                      `NPR ${deliveryFee}`
                     )}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax (13%)</span>
                   <span className="font-semibold text-slate-900 tabular-nums">
-                    ₹{tax}
+                    NPR {tax}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
                   <span>Total</span>
                   <span className="text-[#f97316] text-base tabular-nums">
-                    ₹{total}
+                    NPR {total}
                   </span>
                 </div>
               </div>

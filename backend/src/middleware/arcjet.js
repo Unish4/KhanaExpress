@@ -69,10 +69,7 @@ export const loginRateLimit = async (req, res, next) => {
       });
     }
 
-    return res.status(503).json({
-      success: false,
-      error: "Request protection is temporarily unavailable.",
-    });
+    return next();
   } catch (error) {
     next(); // Allow if Arcjet fails
   }

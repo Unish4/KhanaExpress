@@ -391,11 +391,11 @@ export const OrderTrack = () => {
                             {item.name}
                           </h3>
                           <span className="text-xs font-bold text-slate-900">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            NPR {(item.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5">
-                          ${item.price.toFixed(2)} × {item.quantity}
+                          NPR {item.price.toFixed(2)} × {item.quantity}
                         </p>
                         {item.specialInstructions && (
                           <p className="text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md mt-1.5 inline-block border border-amber-100">
@@ -413,25 +413,25 @@ export const OrderTrack = () => {
                 <div className="flex justify-between text-slate-600">
                   <span>Subtotal</span>
                   <span className="font-medium text-slate-900">
-                    ${(currentOrder.subtotal || 0).toFixed(2)}
+                    NPR {(currentOrder.subtotal || 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Govt Tax (13%)</span>
                   <span className="font-medium text-slate-900">
-                    ${(currentOrder.tax || 0).toFixed(2)}
+                    NPR {(currentOrder.tax || 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600">
                   <span>Delivery Fee</span>
                   <span className="font-medium text-slate-900">
-                    ${(currentOrder.deliveryFee || 0).toFixed(2)}
+                    NPR {(currentOrder.deliveryFee || 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-slate-900 pt-3 border-t border-slate-100">
                   <span>Total Amount</span>
                   <span className="text-[#f97316]">
-                    ${(currentOrder.total || 0).toFixed(2)}
+                    NPR {(currentOrder.total || 0).toFixed(2)}
                   </span>
                 </div>
               </div>

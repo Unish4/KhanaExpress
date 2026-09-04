@@ -426,7 +426,7 @@ export const Checkout = () => {
                       <span className="text-slate-400">×{item.quantity}</span>
                     </div>
                     <span className="font-bold text-slate-800 tabular-nums">
-                      ₹{item.price * item.quantity}
+                      NPR {item.price * item.quantity}
                     </span>
                   </div>
                 ))}
@@ -437,7 +437,7 @@ export const Checkout = () => {
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span className="font-semibold text-slate-900 tabular-nums">
-                    ₹{subtotal}
+                    NPR {subtotal}
                   </span>
                 </div>
 
@@ -447,7 +447,7 @@ export const Checkout = () => {
                     {deliveryFee === 0 ? (
                       <span className="text-emerald-600 font-bold">FREE</span>
                     ) : (
-                      `₹${deliveryFee}`
+                      `NPR ${deliveryFee}`
                     )}
                   </span>
                 </div>
@@ -455,14 +455,14 @@ export const Checkout = () => {
                 <div className="flex justify-between">
                   <span>Tax (13%)</span>
                   <span className="font-semibold text-slate-900 tabular-nums">
-                    ₹{tax}
+                    NPR {tax}
                   </span>
                 </div>
 
                 <div className="flex justify-between text-sm font-bold text-slate-900 pt-3 border-t border-slate-200">
                   <span>Total Amount</span>
                   <span className="text-[#f97316] text-lg tabular-nums">
-                    ₹{total}
+                    NPR {total}
                   </span>
                 </div>
               </div>
@@ -476,7 +476,7 @@ export const Checkout = () => {
                 loading={orderLoading}
                 className="shadow-lg hover:shadow-orange-500/20 py-3.5"
               >
-                Place Order · ₹{total}
+                Place Order · NPR {total}
               </Button>
 
               <p className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1">
