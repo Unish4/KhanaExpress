@@ -203,18 +203,18 @@ export const RestaurantSetup = ({ onCreated }) => {
               />
 
               <Input
-                label="Minimum Order ($)"
+                label="Minimum Order (NPR)"
                 name="minimumOrder"
                 type="number"
                 step="0.01"
-                placeholder="10.00"
+                placeholder="200"
                 value={formData.minimumOrder}
                 onChange={handleChange}
                 leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
               />
 
               <Input
-                label="Delivery Fee ($)"
+                label="Delivery Fee (NPR)"
                 name="deliveryFee"
                 type="number"
                 step="0.01"

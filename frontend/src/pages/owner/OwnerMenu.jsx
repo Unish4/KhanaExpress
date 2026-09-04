@@ -204,7 +204,7 @@ export const OwnerMenu = ({ restaurant }) => {
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold text-slate-900 line-clamp-1">{item.name}</h3>
                     <span className="text-sm font-extrabold text-[#f97316]">
-                      ${item.price?.toFixed(2)}
+                      NPR {item.price?.toFixed(2)}
                     </span>
                   </div>
 

@@ -188,7 +188,7 @@ export const OwnerOrders = () => {
                   <div className="flex items-center gap-3 self-start sm:self-auto">
                     <StatusBadge status={order.status} />
                     <span className="text-sm font-bold text-[#f97316]">
-                      ${(order.total || 0).toFixed(2)}
+                      NPR {(order.total || 0).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -212,7 +212,7 @@ export const OwnerOrders = () => {
                             )}
                           </div>
                           <span className="font-medium text-slate-700">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            NPR {(item.price * item.quantity).toFixed(2)}
                           </span>
                         </div>
                       ))}

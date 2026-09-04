@@ -99,11 +99,11 @@ export const OwnerDashboard = ({ restaurant }) => {
           <div>
             <p className="text-xs font-medium text-slate-500">Total Revenue</p>
             <h3 className="text-2xl font-bold text-slate-900 mt-1">
-              ${(stats?.revenue?.total || 0).toFixed(2)}
+              NPR {(stats?.revenue?.total || 0).toFixed(2)}
             </h3>
             <p className="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              <span>Avg ${(stats?.revenue?.averagePerOrder || 0).toFixed(2)} / order</span>
+              <span>Avg NPR {(stats?.revenue?.averagePerOrder || 0).toFixed(2)} / order</span>
             </p>
           </div>
           <div className="w-12 h-12 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600">
@@ -203,7 +203,7 @@ export const OwnerDashboard = ({ restaurant }) => {
                       <StatusBadge status={order.status} />
                     </div>
                     <p className="text-[11px] text-slate-500 mt-0.5">
-                      {order.items?.length || 0} items • Total: ${(order.total || 0).toFixed(2)}
+                      {order.items?.length || 0} items • Total: NPR {(order.total || 0).toFixed(2)}
                     </p>
                   </div>
                 </div>

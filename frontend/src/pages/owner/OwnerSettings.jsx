@@ -296,7 +296,7 @@ export const OwnerSettings = ({ restaurant, onUpdated }) => {
             />
 
             <Input
-              label="Minimum Order ($)"
+              label="Minimum Order (NPR)"
               name="minimumOrder"
               type="number"
               step="0.01"
@@ -306,7 +306,7 @@ export const OwnerSettings = ({ restaurant, onUpdated }) => {
             />
 
             <Input
-              label="Delivery Fee ($)"
+              label="Delivery Fee (NPR)"
               name="deliveryFee"
               type="number"
               step="0.01"

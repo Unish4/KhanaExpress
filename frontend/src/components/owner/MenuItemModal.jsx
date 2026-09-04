@@ -228,7 +228,7 @@ export const MenuItemModal = ({ isOpen, onClose, item = null, onSaved }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Price ($)"
+              label="Price (NPR)"
               name="price"
               type="number"
               step="0.01"

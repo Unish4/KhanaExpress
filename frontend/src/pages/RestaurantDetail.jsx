@@ -129,7 +129,7 @@ export const RestaurantDetail = () => {
                 <p className="text-[10px] text-slate-300">
                   {currentRestaurant.deliveryFee === 0
                     ? 'Free delivery'
-                    : `₹${currentRestaurant.deliveryFee} delivery`}
+                    : `NPR ${currentRestaurant.deliveryFee} delivery`}
                 </p>
               </div>
             </div>
@@ -196,7 +196,7 @@ export const RestaurantDetail = () => {
                         {dish.description || 'Freshly prepared specialty dish.'}
                       </p>
                       <span className="text-sm font-extrabold text-slate-900 tabular-nums">
-                        ₹{dish.price}
+                        NPR {dish.price}
                       </span>
                     </div>
 
@@ -251,7 +251,7 @@ export const RestaurantDetail = () => {
             <div>
               <p className="text-xs font-bold">{cartCount} items in cart</p>
               <p className="text-xs text-slate-400">
-                Total: <span className="text-white font-bold">₹{subtotal}</span>
+                Total: <span className="text-white font-bold">NPR {subtotal}</span>
               </p>
             </div>
           </div>

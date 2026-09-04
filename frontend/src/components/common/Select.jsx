@@ -12,6 +12,7 @@ export const Select = forwardRef(
       className = '',
       id,
       placeholder = 'Select an option',
+      leftIcon,
       ...props
     },
     ref
@@ -29,11 +30,18 @@ export const Select = forwardRef(
           </label>
         )}
         <div className="relative rounded-lg shadow-xs">
+          {leftIcon && (
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              {leftIcon}
+            </div>
+          )}
           <select
             ref={ref}
             id={selectId}
             disabled={disabled}
             className={`w-full appearance-none text-sm rounded-lg border-1.5 bg-white px-3.5 py-2.5 pr-9 text-slate-900 outline-none transition-all disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed ${
+              leftIcon ? 'pl-9' : ''
+            } ${
               error
                 ? 'border-red-500 focus:border-red-600 focus:ring-2 focus:ring-red-100'
                 : 'border-slate-200 focus:border-[#f97316] focus:bg-[#fff7ed]/20 focus:ring-2 focus:ring-[#f97316]/15'

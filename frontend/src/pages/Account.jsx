@@ -563,8 +563,7 @@ export const Account = () => {
                               {order.restaurant?.name || 'Restaurant'}
                             </p>
                             <p className="text-slate-500">
-                              {order.items?.length || 0} items · ₹
-                              {order.total}
+                              {order.items?.length || 0} items · NPR {order.total}
                             </p>
                           </div>
 

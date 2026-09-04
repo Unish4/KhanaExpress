@@ -229,10 +229,10 @@ export const Browse = () => {
                       </span>
                       <span>·</span>
                       <span className="text-emerald-700 font-semibold">
-                        {r.deliveryFee === 0 ? 'Free delivery' : `₹${r.deliveryFee}`}
+                        {r.deliveryFee === 0 ? 'Free delivery' : `NPR ${r.deliveryFee}`}
                       </span>
                       <span>·</span>
-                      <span>Min ₹{r.minimumOrder || r.minimumFee || 0}</span>
+                      <span>Min NPR {r.minimumOrder || r.minimumFee || 0}</span>
                     </div>
                   </div>
                 </div>
