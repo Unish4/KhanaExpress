@@ -10,6 +10,7 @@ import Account from './pages/Account';
 import Browse from './pages/Browse';
 import RestaurantDetail from './pages/RestaurantDetail';
 import Checkout from './pages/Checkout';
+import OrderTrack from './pages/OrderTrack';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -59,7 +60,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="/orders/:id/track" element={<PlaceholderScreen title="Order Live Tracking" />} />
+      <Route
+        path="/orders/:id/track"
+        element={
+          <ProtectedRoute>
+            <OrderTrack />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Authenticated User Account */}
       <Route
