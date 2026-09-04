@@ -108,7 +108,7 @@ export const OwnerSettings = ({ restaurant, onUpdated }) => {
       const payload = {
         name: formData.name.trim(),
         description: formData.description.trim(),
-        cuisine: formData.cuisine,
+        cuisine: [formData.cuisine],
         address: {
           street: formData.street.trim(),
           city: formData.city.trim(),
@@ -302,7 +302,7 @@ export const OwnerSettings = ({ restaurant, onUpdated }) => {
               step="0.01"
               value={formData.minimumOrder}
               onChange={handleChange}
-              leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
+              leftIcon={<span className="text-xs font-bold text-slate-400">Rs.</span>}
             />
 
             <Input
@@ -312,7 +312,7 @@ export const OwnerSettings = ({ restaurant, onUpdated }) => {
               step="0.01"
               value={formData.deliveryFee}
               onChange={handleChange}
-              leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
+              leftIcon={<span className="text-xs font-bold text-slate-400">Rs.</span>}
             />
           </div>
         </div>

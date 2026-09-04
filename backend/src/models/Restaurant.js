@@ -22,17 +22,17 @@ const restaurantSchema = new mongoose.Schema(
       type: [String],
       validate: {
         validator: function (cuisines) {
-          return cuisines.length > 0; // At least one cuisine
+          return Array.isArray(cuisines) && cuisines.length > 0;
         },
         message: "At least one cuisine type is required",
       },
       set: function (cuisines) {
-        // Normalize: lowercase, trim, remove duplicates
-        if (!Array.isArray(cuisines)) return [];
+        if (!cuisines) return [];
+        const arr = Array.isArray(cuisines) ? cuisines : [cuisines];
         return [
           ...new Set(
-            cuisines
-              .map((c) => c.toLowerCase().trim())
+            arr
+              .map((c) => String(c).toLowerCase().trim())
               .filter((c) => c.length > 0),
           ),
         ];

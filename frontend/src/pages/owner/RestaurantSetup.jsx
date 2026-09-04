@@ -59,7 +59,7 @@ export const RestaurantSetup = ({ onCreated }) => {
       const payload = {
         name: formData.name.trim(),
         description: formData.description.trim(),
-        cuisine: formData.cuisine,
+        cuisine: [formData.cuisine],
         address: {
           street: formData.street.trim(),
           city: formData.city.trim(),
@@ -210,7 +210,7 @@ export const RestaurantSetup = ({ onCreated }) => {
                 placeholder="200"
                 value={formData.minimumOrder}
                 onChange={handleChange}
-                leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
+                leftIcon={<span className="text-xs font-bold text-slate-400">Rs.</span>}
               />
 
               <Input
@@ -218,10 +218,10 @@ export const RestaurantSetup = ({ onCreated }) => {
                 name="deliveryFee"
                 type="number"
                 step="0.01"
-                placeholder="2.50"
+                placeholder="50"
                 value={formData.deliveryFee}
                 onChange={handleChange}
-                leftIcon={<DollarSign className="w-4 h-4 text-slate-400" />}
+                leftIcon={<span className="text-xs font-bold text-slate-400">Rs.</span>}
               />
             </div>
           </div>
