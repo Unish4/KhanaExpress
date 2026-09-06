@@ -5,6 +5,8 @@ import SkeletonLoader from '../../components/common/SkeletonLoader';
 import EmptyState from '../../components/common/EmptyState';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import useOrderStore from '../../store/useOrderStore';
+import useAuthStore from '../../store/useAuthStore';
+import socketService from '../../services/socket.service';
 import toast from 'react-hot-toast';
 import {
   Search,
@@ -50,6 +52,8 @@ export const OwnerOrders = () => {
   const [cancelReason, setCancelReason] = useState('');
   const [cancelLoading, setCancelLoading] = useState(false);
 
+  const { user } = useAuthStore();
+
   const loadOrders = async (isManual = false) => {
     if (isManual) setRefreshing(true);
     const params = activeTab !== 'all' ? { status: activeTab } : {};
@@ -59,7 +63,24 @@ export const OwnerOrders = () => {
 
   useEffect(() => {
     loadOrders();
-  }, [activeTab]);
+
+    if (user?.restaurant) {
+      socketService.connect();
+      socketService.joinRestaurantRoom(user.restaurant);
+
+      const unsubscribe = socketService.onNewOrderReceived((newOrder) => {
+        toast.success(
+          `🔔 New Order Received! Order #${newOrder?._id?.slice(-6) || ''} - Total: Rs. ${newOrder?.totalAmount?.toFixed(2) || '0.00'}`,
+          { duration: 6000 }
+        );
+        loadOrders();
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [activeTab, user?.restaurant]);
 
   const handleCancelConfirm = async () => {
     if (!selectedOrderToCancel) return;

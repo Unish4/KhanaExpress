@@ -10,6 +10,7 @@ import EmptyState from '../components/common/EmptyState';
 import ReviewModal from '../components/orders/ReviewModal';
 import useOrderStore from '../store/useOrderStore';
 import useAuthStore from '../store/useAuthStore';
+import socketService from '../services/socket.service';
 import toast from 'react-hot-toast';
 import {
   CheckCircle2,
@@ -56,6 +57,14 @@ export const OrderTrack = () => {
   useEffect(() => {
     loadOrder();
 
+    socketService.connect();
+    socketService.joinOrderRoom(id);
+
+    const unsubscribe = socketService.onOrderStatusUpdate((updatedData) => {
+      toast.success(`Real-time update: Order status is now ${updatedData?.status?.toUpperCase()} 🚀`);
+      loadOrder();
+    });
+
     // Auto-poll every 15 seconds if order is active
     const interval = setInterval(() => {
       if (
@@ -66,7 +75,11 @@ export const OrderTrack = () => {
       }
     }, 15000);
 
-    return () => clearInterval(interval);
+    return () => {
+      unsubscribe();
+      socketService.leaveOrderRoom(id);
+      clearInterval(interval);
+    };
   }, [id]);
 
   const handleCancelOrder = async () => {
