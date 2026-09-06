@@ -12,6 +12,7 @@ import RestaurantDetail from './pages/RestaurantDetail';
 import Checkout from './pages/Checkout';
 import OrderTrack from './pages/OrderTrack';
 import OwnerLayout from './pages/owner/OwnerLayout';
+import DeliveryLayout from './pages/delivery/DeliveryLayout';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -93,7 +94,7 @@ function App() {
         path="/delivery/*"
         element={
           <ProtectedRoute allowedRoles={['delivery', 'admin']}>
-            <PlaceholderScreen title="Delivery Partner Portal" role="Delivery Partner" />
+            <DeliveryLayout />
           </ProtectedRoute>
         }
       />
