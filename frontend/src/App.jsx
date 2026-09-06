@@ -13,6 +13,7 @@ import Checkout from './pages/Checkout';
 import OrderTrack from './pages/OrderTrack';
 import OwnerLayout from './pages/owner/OwnerLayout';
 import DeliveryLayout from './pages/delivery/DeliveryLayout';
+import AdminLayout from './pages/admin/AdminLayout';
 
 // Protected Route Component
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -102,7 +103,7 @@ function App() {
         path="/admin/*"
         element={
           <ProtectedRoute allowedRoles={['admin']}>
-            <PlaceholderScreen title="Admin Control Dashboard" role="Platform Admin" />
+            <AdminLayout />
           </ProtectedRoute>
         }
       />
