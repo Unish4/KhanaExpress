@@ -1,8 +1,10 @@
 import express from "express";
+import http from "http";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
 import { connectDB } from "./config/db.js";
+import { initSocket } from "./config/socket.js";
 
 // Import all routes
 import authRoutes from "./routes/authRoutes.js";
@@ -139,14 +141,18 @@ app.use(errorHandler);
 
 const PORT = ENV.PORT;
 
+const server = http.createServer(app);
+initSocket(server);
+
 const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       console.log(`Server: http://localhost:${PORT}`);
       console.log(`Environment: ${ENV.NODE_ENV}`);
       console.log(`Health: http://localhost:${PORT}/health`);
+      console.log(`⚡ Socket.io enabled on port ${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error);

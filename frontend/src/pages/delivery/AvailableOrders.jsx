@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import orderService from '../../services/order.service';
+import socketService from '../../services/socket.service';
 import Button from '../../components/common/Button';
 import SkeletonLoader from '../../components/common/SkeletonLoader';
 import EmptyState from '../../components/common/EmptyState';
@@ -37,11 +38,27 @@ export const AvailableOrders = () => {
 
   useEffect(() => {
     fetchAvailableOrders();
+
+    socketService.connect();
+    socketService.joinDeliveryFeed();
+
+    const unsubscribe = socketService.onOrderReadyForPickup((readyOrder) => {
+      toast.success(
+        `🍕 New ready order available at ${readyOrder?.restaurant?.name || 'Restaurant'}!`,
+        { duration: 5000 }
+      );
+      fetchAvailableOrders();
+    });
+
     // Poll every 15 seconds for new ready orders
     const timer = setInterval(() => {
       fetchAvailableOrders();
     }, 15000);
-    return () => clearInterval(timer);
+
+    return () => {
+      unsubscribe();
+      clearInterval(timer);
+    };
   }, []);
 
   const handleAcceptOrder = async (orderId) => {

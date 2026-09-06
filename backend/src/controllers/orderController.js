@@ -2,6 +2,7 @@ import Order from "../models/Order.js";
 import Restaurant from "../models/Restaurant.js";
 import MenuItem from "../models/MenuItem.js";
 import User from "../models/User.js";
+import { emitOrderUpdate, emitNewOrder, emitOrderReady } from "../config/socket.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -131,6 +132,8 @@ export const createOrder = async (req, res) => {
       estimatedDelivery,
       orderDate: new Date(),
     });
+
+    emitNewOrder(restaurant._id, order);
 
     return res.status(201).json({
       success: true,
@@ -405,6 +408,8 @@ export const acceptOrder = async (req, res) => {
     order.status = "confirmed";
     await order.save();
 
+    emitOrderUpdate(order._id, order);
+
     return res.status(200).json({
       success: true,
       message: "Order accepted",
@@ -535,6 +540,11 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     await order.save();
+
+    emitOrderUpdate(order._id, order);
+    if (status === "ready") {
+      emitOrderReady(order);
+    }
 
     return res.status(200).json({
       success: true,
@@ -670,6 +680,8 @@ export const pickupOrder = async (req, res) => {
       });
     }
 
+    emitOrderUpdate(claimedOrder._id, claimedOrder);
+
     return res.status(200).json({
       success: true,
       message: "Order picked up",
@@ -730,6 +742,8 @@ export const deliverOrder = async (req, res) => {
     order.paymentStatus = "paid";
 
     await order.save();
+
+    emitOrderUpdate(order._id, order);
 
     return res.status(200).json({
       success: true,
