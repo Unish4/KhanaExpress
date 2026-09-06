@@ -26,7 +26,21 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: ENV.CLIENT_URL || "http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        ENV.CLIENT_URL || "http://localhost:5173",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+      ];
+      if (allowedOrigins.includes(origin) || ENV.NODE_ENV === "development") {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
@@ -112,6 +126,14 @@ app.get("/", (req, res) => {
         delete: "DELETE /api/addresses/:id",
         setDefault: "PATCH /api/addresses/:id/default",
         getDefault: "GET /api/addresses/default",
+      },
+      admin: {
+        stats: "GET /api/admin/stats",
+        users: "GET /api/admin/users",
+        updateUser: "PATCH /api/admin/users/:id",
+        restaurants: "GET /api/admin/restaurants",
+        updateRestaurant: "PATCH /api/admin/restaurants/:id/status",
+        orders: "GET /api/admin/orders",
       },
     },
   });
