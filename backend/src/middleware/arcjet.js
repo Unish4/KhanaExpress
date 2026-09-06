@@ -3,15 +3,16 @@ import arcjet, { tokenBucket } from "@arcjet/node";
 import { ENV } from "../config/env.js";
 
 export const arcjetMiddleware = async (req, res, next) => {
+  if (!ENV.ARCJET_KEY || ENV.ARCJET_KEY.includes("your_key")) {
+    return next();
+  }
+
   try {
-    // Ask Arcjet if this request is allowed
     const decision = await globalLimiter.protect(req, {
-      requested: 1, // Each request uses 1 token
+      requested: 1,
     });
 
-    // If Arcjet DENIES the request
     if (decision.isDenied()) {
-      // Check if it's a rate limit
       if (decision.reason.isRateLimit()) {
         return res.status(429).json({
           success: false,
@@ -19,7 +20,6 @@ export const arcjetMiddleware = async (req, res, next) => {
         });
       }
 
-      // Check if it's a bot
       if (decision.reason.isBot()) {
         return res.status(403).json({
           success: false,
@@ -27,38 +27,39 @@ export const arcjetMiddleware = async (req, res, next) => {
         });
       }
 
-      // Default denial
       return res.status(403).json({
         success: false,
         error: "Access denied.",
       });
     }
 
-    // Request allowed, proceed to next middleware/route
     next();
   } catch (error) {
-    console.error("Arcjet error:", error);
-    return res.status(503).json({
-      success: false,
-      error: "Request protection is temporarily unavailable.",
-    });
+    console.warn("Arcjet rate limit check skipped:", error.message || error);
+    next();
   }
 };
 
-const loginLimiter = arcjet({
-  key: ENV.ARCJET_KEY,
-  characteristics: ["ip.src"],
-  rules: [
-    tokenBucket({
-      mode: "LIVE",
-      refillRate: 5, // 5 attempts
-      interval: 60, // Per minute
-      capacity: 5, // Max 5 attempts
-    }),
-  ],
-});
+const loginLimiter = ENV.ARCJET_KEY && !ENV.ARCJET_KEY.includes("your_key")
+  ? arcjet({
+      key: ENV.ARCJET_KEY,
+      characteristics: ["ip.src"],
+      rules: [
+        tokenBucket({
+          mode: "LIVE",
+          refillRate: 5,
+          interval: 60,
+          capacity: 5,
+        }),
+      ],
+    })
+  : null;
 
 export const loginRateLimit = async (req, res, next) => {
+  if (!loginLimiter) {
+    return next();
+  }
+
   try {
     const decision = await loginLimiter.protect(req, { requested: 1 });
 
@@ -71,6 +72,6 @@ export const loginRateLimit = async (req, res, next) => {
 
     return next();
   } catch (error) {
-    next(); // Allow if Arcjet fails
+    next();
   }
 };
